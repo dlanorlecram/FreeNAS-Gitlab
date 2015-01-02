@@ -7,7 +7,7 @@ echo "    f8ed4e8: Fri Dec 19 20:25:35 PST 2014"
 echo
 echo "The entire script should be automated with 2 prompts for MySQL root password"
 echo "Mysql Git user password needs to be changed in gitlab.sql and gitlab_git.sh"
-echo "    (Search for $password)"
+echo '    (Search for $password)'
 echo
 echo "Press any key to begin"
 set jnk = $<
