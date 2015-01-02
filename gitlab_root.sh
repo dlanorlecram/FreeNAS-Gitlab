@@ -1,7 +1,19 @@
 #!/bin/tcsh
 
+echo "FreeNAS GitLab installation script."
+echo "This has been tested on:"
+echo "    9.3-RELEASE-p5 FreeBSD 9.3-RELEASE-p5 #1"
+echo "    f8ed4e8: Fri Dec 19 20:25:35 PST 2014"
+echo
+echo "The entire script should be automated with 2 prompts for MySQL root password"
+echo "Mysql Git user password needs to be changed in gitlab.sql and gitlab_git.sh"
+echo "    (Search for $password)"
+echo
+echo "Press any key to begin"
+set jnk = $<
+
 # 3) Enable SSH
-/usr/bin/sed -i '' 's/sshd_enable="NO"/sshd_enable="YES"/g' /etc/rc.conf
+/usr/bin/sed -i '.bak' 's/sshd_enable="NO"/sshd_enable="YES"/g' /etc/rc.conf
 # Generate root keys &  Enable root login (with SSH keys). 
 # [Optional, to continue install straight from SSH to the jail]
 /usr/bin/ssh-keygen -b 4096 -N '' -f ~/.ssh/id_rsa -t rsa -q
@@ -34,11 +46,12 @@ echo 'nginx_enable="YES"' >> /etc/rc.conf
 /usr/sbin/service redis start
 /usr/sbin/service mysql-server start
 
-
 # 8) Secure mysql install. [Default root password is empty.] 
 # Create git mysql user and database for gitlab.
+echo "The MySQL root password is blank by default:"
 /usr/local/bin/mysql_secure_installation
 # Add the mysql git user.
+echo "Enter the MySQL root password that you just set:"
 /usr/local/bin/mysql -u root -p < gitlab.sql
 
 # Steps 10-17, run as user git.
