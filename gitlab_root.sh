@@ -39,21 +39,32 @@ echo 'nginx_enable="YES"' >> /etc/rc.conf
 # Create git mysql user and database for gitlab.
 /usr/local/bin/mysql_secure_installation
 # Add the mysql git user.
-/usr/local/bin/mysql -u root -p < gitlab_2.sql
+/usr/local/bin/mysql -u root -p < gitlab.sql
 
 # Steps 10-17, run as user git.
-su - git -c "/tmp/gitlab_git.sh"
+su - git -c "/FreeNAS-Gitlab/gitlab_git.sh"
 
-# 18) NGINX setup.
+## 18) Copy the gitlab init
+/bin/cp /usr/home/git/gitlab/lib/support/init.d/gitlab /usr/local/etc/rc.d/gitlab
+service gitlab start
+
+## 19) NGINX setup.
+# Add the gitlab conf to the nginx.conf
+mv /usr/local/etc/nginx/nginx.conf /usr/local/etc/nginx/nginx.conf.bak
+set lines = `wc -l < /usr/local/etc/nginx/nginx.conf.bak`
+set wanted = `expr $lines - 1`
+head -n $wanted /usr/local/etc/nginx/nginx.conf.bak > /usr/local/etc/nginx/nginx.conf
+echo "    include /usr/local/etc/nginx/gitlab.conf;" >> /usr/local/etc/nginx/nginx.conf
+echo "}" >> /usr/local/etc/nginx/nginx.conf
+# Copy the nginx template to where nginx can read it
 /bin/cp /usr/home/git/gitlab/lib/support/nginx/gitlab /usr/local/etc/nginx/gitlab.conf
-# Tell nginx where to find the gitlab stuff.
+
+# Tell nginx where to find the gitlab server.
 /usr/bin/sed -i ".bak" "s/proxy_pass http:\/\/gitlab;/proxy_pass http:\/\/127.0.0.1:8080;/g" /usr/local/etc/nginx/gitlab.conf
 # Disable gzip static. If you compile nginx from ports you can enable gzip. pkg comes with it disabled by default.
 /usr/bin/sed -i ".bak" "s/gzip_static on;/#gzip_static on;/g" /usr/local/etc/nginx/gitlab.conf
 # nginx permissions
 /bin/mkdir -p /var/tmp/nginx /var/log/nginx
 /usr/sbin/chown -R www: /var/log/nginx /var/tmp/nginx
-
-# 19) Copy the gitlab init
-/bin/cp /usr/home/git/gitlab/lib/support/init.d/gitlab /usr/local/etc/rc.d/gitlab
-
+# Start nginx
+service nginx start

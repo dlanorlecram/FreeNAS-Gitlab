@@ -36,6 +36,8 @@ chmod u+rwx,g=rx,o-rwx /home/git/gitlab-satellites
 
 
 # 15) Install Gems
+sed -i '' "s/https/http/g" Gemfile
+
 # Set build options specific for BSD
 bundle config build.nokogiri --with-opt-include=/usr/local/include/ --with-opt-lib=/usr/local/lib/
 bundle config build.charlock_holmes --with-opt-include=/usr/local/include/ --with-opt-lib=/usr/local/lib/
