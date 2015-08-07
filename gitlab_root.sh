@@ -21,20 +21,22 @@ echo "PermitRootLogin without-password" >> /etc/ssh/sshd_config
 # Start SSH
 /usr/sbin/service sshd start
 
-# 4) Update packages and upgrade any.
+# 4a) Fetch the latest ports tree and install the most recent pkg. Also allows you to compile nginx yourself with gzip support.
+/usr/sbin/portsnap fetch
+/usr/sbin/portsnap extract
+cd /usr/ports/ports-mgmt/pkg
+make && make deinstall && make install clean
+
+# 4b) Update packages and upgrade any.
 /usr/sbin/pkg update -f
 /usr/sbin/pkg upgrade -y
-
-# Commented out because everything is from pkg. Comment out if you want to compile nginx with gzip support.
-#/usr/sbin/portsnap fetch
-#/usr/sbin/portsnap extract
 
 # 5) Create user first installing git will install a git user to 1001 (First FreeNAS user.)
 # Add git user.
 pw add user -n git -u 913 -m -s /usr/local/bin/bash -c "GitLab"
 
 # 6) Install Dependencies
-/usr/sbin/pkg install -y cmake gmake bash git redis icu libxml2 libxslt python2 nginx rubygem-bundler rubygem-rake libressl libssh2 libgit2 krb5 mysql56-server rubygem-rack-ssl pkgconf
+/usr/sbin/pkg install -y cmake gmake bash git redis icu libxml2 libxslt python2 nginx node rubygem-bundler rubygem-rake libressl libssh2 libgit2 krb5 mysql56-server rubygem-rack-ssl pkgconf
 # Update 
 /usr/local/bin/gem update --system
 
