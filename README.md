@@ -1,5 +1,9 @@
+No longer maintained.
+=====================
+
+I have since moved to [Gogs](https://github.com/jedediahfrey/FreeNAS-Gogs) for my Git hosting.
+
 Gitlab on FreeNAS
-==============
 
 Scripts to get GitLab working in FreeNAS. If you prefer to do each step by hand [a tutorial is posted on the FreeNAS forums](https://forums.freenas.org/index.php?threads/how-to-gitlab-on-freenas-9-3.26347/)
 
