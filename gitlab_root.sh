@@ -54,7 +54,7 @@ echo "The MySQL root password is blank by default:"
 /usr/local/bin/mysql_secure_installation
 # Add the mysql git user.
 echo "Enter the MySQL root password that you just set:"
-/usr/local/bin/mysql -u root -p < gitlab.sql
+/usr/local/bin/mysql -u root -p < "/FreeNas-Gitlab/gitlab.sql"
 
 # Steps 10-17, run as user git.
 su - git -c "/FreeNAS-Gitlab/gitlab_git.sh"
